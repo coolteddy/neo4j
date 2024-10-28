@@ -1,0 +1,34 @@
+services:
+  neo4j:
+    image: neo4j:4.4.38-community
+    ports:
+      # http port
+      - 7474:7474
+      # https port
+      - 7473:7473
+      # bolt (both secure and nonsecure)
+      - 7687:7687  
+    restart: unless-stopped
+    environment:
+      - NEO4J_AUTH=neo4j/password
+      - NEO4J_dbms_default__advertised__address=localhost
+      # - NEO4J_dbms_connector_bolt_tls__level=REQUIRED
+      - NEO4J_dbms_connector_bolt_tls__level=OPTIONAL
+      - NEO4J_dbms_ssl_policy_bolt_enabled=true
+      - NEO4J_dbms_ssl_policy_bolt_base__directory=/ssl/bolt
+      - NEO4J_dbms_ssl_policy_bolt_private__key=/ssl/bolt/neo4j.key
+      - NEO4J_dbms_ssl_policy_bolt_public__certificate=/ssl/bolt/neo4j.crt
+      - NEO4J_dbms_ssl_policy_bolt_client__auth=NONE
+      - NEO4J_dbms_ssl_policy_https_enabled=true
+      - NEO4J_dbms_ssl_policy_https_base__directory=/ssl/https
+      - NEO4J_dbms_ssl_policy_https_private__key=/ssl/https/neo4j.key
+      - NEO4J_dbms_ssl_policy_https_public__certificate=/ssl/https/neo4j.crt
+      - NEO4J_dbms_ssl_policy_https_client__auth=NONE
+      - NEO4J_dbms_connector_https_enabled=true
+      # - NEO4J_dbms_connector_http_enabled=false
+    volumes:
+      - ./certificates:/ssl
+      - ./db/data:/data
+      # - ./db/conf:/conf
+      - ./db/logs:/logs
+      - ./db/plugins:/plugins
